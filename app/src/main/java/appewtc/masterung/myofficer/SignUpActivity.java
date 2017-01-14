@@ -1,11 +1,14 @@
 package appewtc.masterung.myofficer;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,8 +20,10 @@ public class SignUpActivity extends AppCompatActivity {
     private ImageView imageView;
     private EditText nameEditText, userEditText, passwordEditText;
     private Button button;
-    private String nameString, userString, passwordString;
+    private String nameString, userString, passwordString,
+            pathImageChooseString, nameImageChooseString;
     private Uri uri;
+    private boolean aBoolean = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +53,7 @@ public class SignUpActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
 
             uri = data.getData();
+            aBoolean = false;
 
             //Show Image Choose to ImageView
             try {
@@ -98,10 +104,44 @@ public class SignUpActivity extends AppCompatActivity {
                     //Have Space
                     MyAlert myAlert = new MyAlert(SignUpActivity.this);
                     myAlert.errorDialog("Have Space", "Please Fll All Every Blank");
+                } else if (aBoolean) {
+                    //Non Choose Image
+                    MyAlert myAlert = new MyAlert(SignUpActivity.this);
+                    myAlert.errorDialog("ยังไม่เลือกรูปภาพ", "กรุณาเลือกรูปภาพด้วยคะ");
+
+                } else {
+                    // Every Thing OK
+                    uploadDataToServer();
+
                 }
 
             }   // onClick
         });
     }
+
+    private void uploadDataToServer() {
+
+        //Find Path of Image Choose
+        String[] strings = new String[]{MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(uri, strings, null, null, null);
+
+        if (cursor != null) {
+
+            cursor.moveToFirst();
+            int i = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            pathImageChooseString = cursor.getString(i);
+
+        } else {
+            pathImageChooseString = uri.getPath();
+        }
+
+        Log.d("14janV1", "pathImage ==> " + pathImageChooseString);
+
+        //Find Name of Image Choose
+        nameImageChooseString = pathImageChooseString.substring(pathImageChooseString.lastIndexOf("/"));
+        Log.d("14janV1", "nameImage ==> " + nameImageChooseString);
+
+
+    }   // upload
 
 }   // Main Class
