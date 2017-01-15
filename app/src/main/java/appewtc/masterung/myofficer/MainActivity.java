@@ -5,11 +5,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //Explicit
     private Button signInButton, signUpButton;
+    private EditText userEditText , passwordEditText;
+    private String userString, passwordString;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +23,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Bind Widget
         signInButton = (Button) findViewById(R.id.button);
         signUpButton = (Button) findViewById(R.id.button2);
+        userEditText = (EditText) findViewById(R.id.editText4);
+        passwordEditText = (EditText) findViewById(R.id.editText5);
 
         //Button Controller
         signInButton.setOnClickListener(MainActivity.this);
@@ -34,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.button:   // for SignIn
 
+                myAuthen();
+
                 break;
             case R.id.button2:  // for SignUp
                 startActivity(new Intent(MainActivity.this, SignUpActivity.class));
@@ -41,4 +49,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
     }
+
+    private void myAuthen() {
+
+        //Get Value
+        userString = userEditText.getText().toString().trim();
+        passwordString = passwordEditText.getText().toString().trim();
+
+        //Check User & Password
+        if (userString.equals("") || passwordString.equals("")) {
+            //Have Space
+            MyAlert myAlert = new MyAlert(MainActivity.this);
+            myAlert.errorDialog("มีช่องว่าง", "กรุณากรอกทุกช่องสิคะ");
+        }
+
+    }   // myAuthen
 }   // Main Class
