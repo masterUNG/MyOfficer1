@@ -146,7 +146,7 @@ public class SignUpActivity extends AppCompatActivity {
         nameImageChooseString = pathImageChooseString.substring(pathImageChooseString.lastIndexOf("/"));
         Log.d("14janV1", "nameImage ==> " + nameImageChooseString);
 
-        //upload Image
+        //upload Image & String
         try {
 
             //Connected FTP protocal
@@ -154,6 +154,7 @@ public class SignUpActivity extends AppCompatActivity {
                     .Builder().permitAll().build();
             StrictMode.setThreadPolicy(threadPolicy);
 
+            //Upload Image
             SimpleFTP simpleFTP = new SimpleFTP();
             simpleFTP.connect("ftp.swiftcodingthai.com", 21,
                     "14jan@swiftcodingthai.com", "Abc12345");
@@ -161,6 +162,23 @@ public class SignUpActivity extends AppCompatActivity {
             simpleFTP.cwd("Image");
             simpleFTP.stor(new File(pathImageChooseString));
             simpleFTP.disconnect();
+
+            //Upload Text
+            UpdateStringToServer updateStringToServer = new UpdateStringToServer(SignUpActivity.this,
+                    nameString, userString, passwordString,
+                    "http://swiftcodingthai.com/14jan/Image" + nameImageChooseString);
+            updateStringToServer.execute();
+
+            if (Boolean.parseBoolean(updateStringToServer.get())) {
+                // Upload Success
+                finish();
+            } else {
+                //Unsuccess
+                MyAlert myAlert = new MyAlert(SignUpActivity.this);
+                myAlert.errorDialog("Upload False", "Please Try Again Upload False");
+            }
+
+
 
         } catch (Exception e) {
             e.printStackTrace();
