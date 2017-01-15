@@ -75,7 +75,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             myAlert.errorDialog("Password False", "Please Try Again Password False");
         } else {
             //Password True
-
+            startActivity(new Intent(MainActivity.this, ServiceActivity.class));
+            finish();
         }
 
     }   // myAuthen
